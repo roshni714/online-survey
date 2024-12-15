@@ -1,0 +1,63 @@
+
+% What is the problem? 
+
+% We want high resolution estimates of population health outcomes across spatial strata.
+
+% Why is it interesting and important?
+
+% Why is it hard? (E.g., why do naive approaches fail?)
+% Why hasn't it been solved before? (Or, what's wrong with previous proposed solutions? How does mine differ?)
+% What are the key components of my approach and results? Also include any specific limitations.
+
+High resolution estimates of population health outcomes across spatial strata are necessary to inform targeted and equitable public health interventions. \rs{elaborate more on why this is useful}
+
+Traditional representative in-person household surveys are the gold standard for public health data collection. While these surveys are representative at a \textit{macro-geographic} level (i.e. national level), they cannot currently be used to produce \textit{micro-geographic} level (i.e. state or county level) estimates due to limited sample size and high deployment costs.
+
+Large-scale online survey are a promising tool for obtaining micro-geographic level health estimates \citep{geldsetzer2020use, us2021measuring, salomon2021us} because compared to traditional in-person surveys, online surveys are faster to deploy, cheaper to administer, and scale to much larger sample sizes \citep{blumberg2021national}. However, their key limitation is that they suffer heavily from sampling bias, meaning that the population of survey respondents differs from the target population. Without bias adjustment, conclusions drawn from online surveys may not be representative and generalizable.
+
+Sampling bias in online surveys is typically addressed by applying covariate-based reweighting methods, such as inverse propensity weighting and post-stratification \citep{ groves2011survey, rosenbaum1983central}. These techniques yield unbiased estimation of the target outcome if the sampling bias is \textit{ignorable}, meaning that an individual's probability of survey response depends only on observable covariates. However, recent empirical analyses find that these techniques fail to sufficiently adjust for the bias in online surveys \citep{bradley2021unrepresentative, kessler2022estimated}, indicating that sampling bias in online surveys likely \textit{non-ignorable}. Under non-ignorable sampling bias, an individual's probability of survey response can depend on unobservable covariates that also affect their outcome, as well as observed covariates. For instance, \citet{kessler2022estimated} find that an online survey called the Household Pulse Survey (HPS) yields implausibly high estimates of the prevalence of anxiety-depression compared to a telephone survey called the Behavioral Risk Factor Surveillance System (BRFSS). They observe that the HPS respondent population differs from the target population in geographic-demographic characteristics, and they hypothesize that the two populations differ in their unmeasured psychological characteristics, as well.
+
+The main goal of this work is to evaluate whether online surveys, with appropriate bias adjustment, are a cost-effective tool for obtaining timely, micro-geographic level population health estimates. To this end, our first contribution is a simple and practical method for adjusting for non-ignorable sampling bias in online surveys. We provide a procedure for learning micro-geographic level estimates of population health outcomes from potentially biased, individual level online survey data and macro-geographic level target outcome data, which is assumed to be unbiased. The key assumption underlying our approach is that sampling bias in online surveys satisfies the conditional $\Gamma$-biased sampling model \citep{sahoo2022learning}, which posits that observed covariates can affect the probability of sample selection arbitrarily much but the amount of unexplained variation in the probability of sample selection is bounded by a constant. Under this assumption, we learn partial identification bounds on the conditional mean outcome in the target population from the online survey data for a range of bias-adjustment parameters $\Gamma$, and we calibrate $\Gamma$ using the macro-geographic level target data. Our approach is compatible with existing post-stratification and importance reweighting techniques that correct for sampling bias due to observed covariates.
+
+Our second contribution is the development of a rich testbed for evaluating the quality of micro-geographic level estimates obtained from online survey data. Evaluating the quality of estimates obtained from online surveys is often infeasible because ground truth measurements of the outcomes in the target population are unavailable. Nevertheless, we identify three different population health indicators for which there are repeated measurements from an online survey and a ground truth data source for the same target population over the same period of time (see Table \ref{tab:data_pairing}). Furthermore, for each indicator, we identify ground truth data sources that contain measurements of the indicators at two geographic resolutions, a macro-geographic level and a micro-geographic level. The online surveys included in our testbed are HPS \citep{us2021measuring} and the US COVID-19 Trends \& Impact Survey (CTIS) \citep{salomon2021us}. We evaluate the performance of our method as well as other baselines on our testbed and find that across different indicators and online surveys, our method yields lower error in micro-geographic level estimates than methods that only utilize the online survey data or target macro-geographic level data alone. \rs{quantify the amount of benefit that we get}
+
+Our last contribution is an analysis of the cost-accuracy tradeoffs of online surveys versus traditional houshold surveys. For the COVID-19 vaccination indicator, we find that online surveys with bias adjustment can obtain the same level of error as traditional offline surveys at \rs{some fraction} of the cost \rs{provide some quantitative takeaway about the tradeoffs}.
+
+% Our approach assumes that sampling bias in the online survey satisfies the conditional $\Gamma$-biased sampling model \citep{sahoo2022learning}. Under conditional $\Gamma$-biased sampling, observed covariates can affect an individual's probability of sample selection arbitrarily much but the amount of unexplained variation in the
+% probability of sample selection is bounded by a constant factor.
+
+
+	\begin{table}[ht]
+    \centering
+    \renewcommand{\arraystretch}{1.5} % Adjust row height for better readability
+    \setlength{\tabcolsep}{6pt} % Adjust column spacing
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        \multirow{3}{5em}{Health Indicator} & \multirow{3}{5em}{Online Survey} & \multirow{3}{5em}{Ground Truth (GT)} & \multirow{3}{5em}{GT Macro-Geographic Level} & \multirow{3}{5em}{GT Micro-Geographic Level}\\
+        & & & &  \\
+        & & & &  \\
+        \hline 
+        COVID-19 Vaccination & HPS  & CDC    & National & State  \\
+        COVID-19 Vaccination & CTIS & CDC    & State    & County \\
+        SNAP Enrollment      & HPS  & USDA   & National & State  \\
+        Smoking Prevalence   & CTIS & BRFSS  & State    & Metropolitan Division \\
+        Mental Health        & HPS  & BRFSS  & National & State \\ 
+        \hline
+    \end{tabular}
+    \caption{Our testbed spans four different population health indicators, two online surveys, and target data sources at two levels of geographic resolution. Our learning procedure utilizes the online survey data and target data at the macro-geographic level to provide micro-geographic level estimates. The target micro-geographic level data is used to evaluate these estimates.}
+    \label{tab:data_pairing}
+\end{table}
+
+
+\begin{subsection}{Related Work} 
+	Most prior works that aim to correct for sampling bias in survey data assume that sampling bias is ignorable, which means that an individual's probability of survey response only depends on observable characteristics but do not correct for non-ignorable selection. This type of sampling bias can be addressed via post-stratification \citep{groves2008impact, groves2011survey, little1993post}  or propensity score reweighting \citep{david1983imputation,rosenbaum1983central,seaman2013review}.
+
+	However, empirical studies of recent online surveys suggest that sampling bias in online surveys is non-ignorable \citep{bradley2021unrepresentative, kessler2022estimated}. There are a handful of recent works that aim to address non-ignorable sampling bias in surveys \citep{greenlees1982imputation,qin2002estimation, peress2010correcting, reitsma2022bias, wisniowski2020integrating}. \citet{peress2010correcting} aims to correct for non-response by estimating units' response propensity from proxies such as number of attempted phone calls, indicators of temporary refusal, and interviewer-coded measures of cooperativeness and extrapolating from the low-propensity respondents to learn about the nonrespondent population. \citet{greenlees1982imputation,qin2002estimation} account for non-ignorable sampling bias using parametric and semiparametric modeling approaches \rs{todo add detail}. \citet{reitsma2022bias} learns a mapping from micro-geographic level estimates from an online survey to micro-geographic level target data for a single indicator and uses this mapping to correct for bias in other indicators. \citet{wisniowski2020integrating} proposes a Bayesian modeling approach \rs{todo add detail}. Our work differs from these previous because we do not assume access to proxy variables, access to micro-geographic level target data, or a parametric form for the probability of survey response. 
+
+	Instead, the key assumption underlying our approach is the conditional $\Gamma$-biased sampling model of \citet{sahoo2022learning}, which is nonparametric model for non-ignorable sampling bias. The authors also consider learning under this model, but their goal is to learn a predictive model that minimizes the worst-case risk under $\Gamma$-biased sampling, not to obtain partial identification bounds on micro-geographic level target quantities. Furthermore, they also leave the question of how to select $\Gamma$ largely open, while our procedure provides concrete guidance on this choice by leveraging macro-geographic level target outcome data to select $\Gamma$. The form of the partial identification bounds under conditional $\Gamma$-biased sampling can be obtained by applying the results of \citet{dorn2024doubly,rockafellar2000optimization}.
+\end{subsection}
+
+
+
+
+

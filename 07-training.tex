@@ -1,0 +1,50 @@
+\subsection{Features and Dataset Preprocessing}
+\rs{Outline for this section:
+\begin{enumerate}
+	\item For HPS, we obtain individual level features including...
+	\item Then say: We supplement the individual level features available from the online surveys with area level features obtained from the ACS Community Survey that correspond to each individual's state identifier.
+	\item Then describe state level features that we merge in
+	\item Repeat for CTIS. For CTIS, we obtain individual level features including...
+\end{enumerate}}
+
+
+For each HPS respondent, we consider the covariates sex, race, age group, education category, insurance status, and household size. For sex, race, and insurance status, we one-hot encode the demographic information. For the categorical variables age group, education level, and household size, we assign ordered integer values to each category. We exclude any of the surveyed who did not respond to whether or not they have received a COVID-19 vaccination.
+
+To enable more information sharing among similar states, we also augment each respondent's covariates with the ACS state characteristics of their respective state \amy{is this from 2021?}. These characteristics include demographic information, such as median income, political party rates, average household size, and more \amy{do i need to include a full list?}.\rs{yes add full list!}
+
+\subsection{Post-Stratification Weights}
+\rs{I copied and pasted the relevant sections that we previously wrote about this. Needs clean up.}
+We estimate the target covariate distribution $Q_{X}$ using data from the 2020 Census. From the Census, we can estimate $dQ_{X}$ for every combination of FIPS code, sex, age category, education, and race group in the United States. We implement this by following the procedure in \citet{royal2019survey}.
+
+For each time window $t$, we compute our training covariate distribution $P_{X}^{t}$ using the 2021 CTIS data collected in time window $t$. We can estimate $dP_{X}^{t}$ for every combination of FIPS code, sex, age category, education, and race group in the dataset by computing their empirical proportions.
+
+With these estimates of $dQ_{X}$ and $dP^{t}_{X}$, we can compute the post-stratification weights as follows
+\[ r^{t}(x) = \frac{dQ_{X}^{t}(x)}{dP_{X}^{t}(x)} = \frac{dQ_{X}(x)}{dP^{t}_{X}(x)}.\]
+
+Using the ACS 2020 population survey, we generate post-stratification weights per demographic feature combination across age, gender, race/ethnicity, income, education level, and geographic region (state for HPS, county for CTIS).
+
+For each state, we sum the ACS weights across each set of covariates to compute a post-stratification weight for each respondent. These are used within both the model fitting step and the final state-wide aggregation when obtaining the final prediction.
+
+\subsection{Learning Procedure}
+We note that all of the population health outcomes in our testbed are binary. So, the partial identification bounds can be obtained by \eqref{eq:binary_bounds}. 
+
+\textbf{Models.}
+We estimate $\mu_{P^{t}}(x):= \EE[P^{t}]{Y \mid X=x}$ for each time-step $t$ via logistic regression using the default implementation in the scikit-learn package.
+
+\textbf{Dataset splits.} At each time-step $t$, we split the data from the online survey into a 60\% train, 20\% validation, 20\% test split. The average number of samples in the HPS dataset per week is $n= \rs{todo}$, which yields \rs{todo} training samples, \rs{todo} validation samples, and \rs{test} samples per time step. The average number of samples in the CTIS dataset per week is $n=\rs{todo}$, which yields \rs{todo} training samples, \rs{todo} validation samples, and \rs{test} samples.
+
+\rs{can you specify what each dataset is used to do. For example, we fit the logistic regression model on the training set. We use the validation set for early stopping. We use the test set to compute the partial identification bounds.}
+
+\textbf{Training Procedure.}
+
+For each timestep, we estimate $\mu_{P^{t}}(\cdot)$ on the train and validation sets of the processed HPS survey data. 
+
+\rs{explain how state/county level estimates are computed and using what data}
+
+\rs{then explain how we do $\Gamma$-calibration--here's the text you wrote before}: We compute the partial identification bounds for vaccination outcomes for multiple values of $\Gamma$ ($\Gamma$ = 1.0, 1.1, ..., 2.4) according to the binary RU regression method, utilizing a linear base predictor for the first quantile regression step. For each value of $\Gamma$, we find the partial identification bounds for each state-level vaccination outcome at two week intervals from March 2021 to August 2021. We then find the $\Gamma$ that minimizes the MSE between the lower partial identification bound and the CDC ground truth at the subgroup level. 
+
+We bootstrap over the test set $B=1000$ times to obtain 95\% confidence intervals on our estimates. In each bootstrapping iteration, we resample the test set with replacement to match its original size. We pass each bootstrapped test set through the model and compute subgroup means to generate our predictions. This is done by taking an average across all respondents in a particular state, weighted according to the post-stratification weights. We then compute the relevant metrics, such as Micro-Geographic Level MAE, and aggregate across all sets to obtain our confidence intervals. 
+
+\amy{Also, is there somewhere I should more explicitly define the three categories of predictions (I'm guessing this will be in results?) and the subsequent MSE, MAE metrics?} \rs{we can define it in the main text!}
+
+ %\amycomm{verify if, for finding argmin Gamma, CTIS is compared to the CDC ground truths at the county (or state) level}

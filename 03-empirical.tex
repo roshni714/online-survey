@@ -1,0 +1,35 @@
+We evaluate quality of the micro-geographic level estimates obtained from online surveys using our testbed (Table \ref{tab:data_pairing}).
+
+\begin{subsection}{Temporal Evaluation Setup}
+Both the online surveys and ground truth data sources of our test bed are collected at frequent time intervals (see Appendix \ref{app:dataset} for details), so we evaluate the micro-geographic estimates obtained from online surveys at multiple time steps $t=1, 2, \dots, T$. Let $P^{t}, Q^{t}$ denote the online survey population and target population at time step $t$, respectively. For simplicity, in our experiments, the target covariate distribution $Q_{X}^{t}$ is given by the 2020 Census and does not change with $t$. However, note that the online survey distribution $P^{t}$ and the target conditional distribution $Q_{Y|X}^{t}$ may evolve of time.
+
+To generate micro-geographic level estimates at time step $t$, all methods only utilize data from time step $t$. We evaluate two baselines and our approach:
+\begin{enumerate}
+\item Target Macro-Geographic: Target macro-geographic outcomes from the ground truth data source ared used as micro-geographic level estimates. In other words, if micro-geographic region $h$ lies in macro-geographic region $g$, this approach sets the estimate of the mean target outcome in $h$ to $\mu_{g}$.
+\item Naive Micro-Geographic: Online survey data and post-stratification weights at time step $t$ are used generate micro-geographic level estimates. Note that this approach is equivalent to running our method with $\Gamma=1$ and does not adjust for non-ignorable sampling bias.
+\item Bias-Adjusted Micro-Geographic: We use the procedure described in Section \ref{sec:method} to generate micro-geographic level estimates from the online survey data from time step $t$ and macro-geographic level ground truth data from time step $t$. 
+\end{enumerate}
+Importantly, none of these approaches rely on the target micro-geographic level outcomes at time step $t$, which are used purely for evaluation.
+
+For all methods, we report the MAE (mean absolute error) of the micro-geographic level estimates at time step $t$, i.e.
+\[  \text{MAE}(t):= \frac{1}{|\mathcal{H}|} \sum_{h \in \mathcal{H}} | \hat{\mu}_{h}^{t} - \mu_{h}^{t}|.\]
+\end{subsection}
+
+\begin{subsection}{Results}
+
+\begin{subsubsection}{COVID-19 Vaccination}
+\rs{can be made more concise!}
+We find that the bias adjustment parameter selected by our procedure in Section \ref{subsec:heuristic} changes gradually over time (Figure \ref{fig:arg_gamma}). For both online surveys, the optimal bias adjustment parameter $\Gamma$ exhibits a similar trend, where the optimal bias adjustment increases from April to June 2021, when vaccination coverage was increasing rapidly, then slightly decreases in July 2021, when vaccination coverage began to plateau. 
+
+We also evaluate the performance of our bias-adjustment approach. For both online surveys, we see a marked improvement in performance with bias adjustment, where we are able to maintain a low, relatively constant MAE when we select $\Gamma$ with the procedure from Section \ref{subsec:heuristic}. We also observe that this method outperforms the naive approach that relies on the online survey data without adjusting for non-ignorable sampling bias and also outperforms using the macro-geographic level target outcomes as micro-geographic level estimates.
+
+%  %This verifies that the sampling bias model is effective at capturing a significant portion of the sampling bias within the HPS survey.
+
+% For CTIS, we compute the state-level MSE between the county-level partial-identification estimates and CDC ground truths with and without bias adjustment (Figure \ref{fig:ctis}, top). With an optimized bias-adjustment ($\hat{\Gamma}$), selected using state-level ground truth data, we are again able to improve small-area estimates. We also compute the MSE from using the state-level ground truth as the county-level estimate (Figure \ref{fig:ctis}, bottom). We see that this substitution outperforms the case where we regress without adjusting for sampling bias ($\Gamma=1$) but does not outperform an optimized bias-adjustment. This suggests that we may improve surveillance systems via this bias sampling model by simply incorporating both online surveys and traditional data sources.
+\end{subsubsection}
+
+\begin{subsubsection}{SNAP and Smoking}
+
+\end{subsubsection}
+
+\end{subsection}

@@ -1,0 +1,48 @@
+We outline different components of our testbed.
+\begin{subsection}{Online Survey Data Sources}
+We utilize data from two of the largest recent online surveys containing public health data (Table \ref{tab:surveys}). From each survey, we have access to individual level health indicators; the indicators available in each survey are outlined in Table \ref{tab:data_pairing}. The online surveys also have individual level demographic features, including age, gender, race/ethnicity, income, education level, and state or county identifiers. 
+\begin{enumerate}
+\item \textbf{Household Pulse Survey (HPS)} \citep{us2021measuring} - HPS is a survey that has been administered biweekly by the US Census Bureau since the beginning of the COVID-19 pandemic. The survey focuses on health, economic, and social topics, with questionnaires evolving over time. The HPS data are publicly available with state-level identifiers. We restrict our analysis to HPS data collected 11 weeks after vaccine emergency use authorization (EUA) for adults from February 23, 2021 - April 20, 2021 \rs{is this true for SNAP as well?}.
+
+\item \textbf{US COVID-19 Trends and Impact Survey (CTIS)} \citep{salomon2021us} - CTIS is a survey administered by Facebook and Carnegie Mellon University that ran daily from April 6, 2020, to June 25, 2022 and aimed to record the spread and impact of COVID-19 in the United States. Deidentified individual level data are available to researchers. CTIS was administered more frequently and had a larger sample size than HPS. Additionally, CTIS data included county-level identifiers. We restrict our analysis to CTIS data collected between March and August 2021.
+\end{enumerate}
+
+\begin{table}[ht]
+    \centering
+    \renewcommand{\arraystretch}{1.5} % Adjust row height for better readability
+    \setlength{\tabcolsep}{6pt} % Adjust column spacing
+    \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+        \multirow{3}{4em}{Online Survey} & \multirow{3}{4em}{Total Sample Size} & \multirow{3}{4em}{Frequency} & \multirow{3}{6em}{Sampling Frame} & \multirow{3}{5em}{Geographic Resolution} & \multirow{3}{5em}{Administrator}\\
+        & & & & & \\
+        & & & & & \\
+        \hline 
+        HPS & 5 million & \multirow{3}{4em}{Every two weeks}    & \multirow{3}{6em}{US Census Bureau's Master Address File} & State & US Census Bureau  \\
+        & & & & & \\
+        & & & & & \\
+        \hline
+        CTIS & 29 million & Daily    & \multirow{2}{6em}{Facebook Active Users}   & County & Facebook, CMU\\
+        & & & & & \\
+        \hline
+    \end{tabular}
+    \caption{Our testbed includes two large-scale online surveys, HPS and CTIS. }
+    \label{tab:surveys}
+\end{table}
+\end{subsection}
+
+\begin{subsection}{Ground Truth Covariate Distribution} 
+\noindent\textbf{American Communities Survey (ACS)} - \rs{add description of ACS survey}
+\end{subsection}
+
+
+\begin{subsection}{Ground Truth Data Sources}
+
+\noindent\textbf{CDC Ground-Truth Vaccination Rates} \rs{add citation?}- Ground-truth vaccination rates at the state-level and county-level across time were collected by the CDC and publicly available \citep{covid_data}. We use these data to evaluate bias in estimates of coverage from HPS and CTIS, to calibrate $\Gamma$, and to evaluate predictions.
+
+
+\rs{need to add USDA} 
+\newline
+\rs{need to add BRFSS}
+
+\rs{Add a discussion (maybe to the main text?) on the extent to which these datasets are ``ground truth''/gold standard, e.g. discuss that BRFSS is itself a telephone (but Kessler et al treat it like it is ground truth).}
+\end{subsection}

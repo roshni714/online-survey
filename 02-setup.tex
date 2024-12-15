@@ -1,0 +1,76 @@
+We give the problem setup and describe how to compute partial identification bounds on the micro-geographic level outcomes in the target population.
+
+\begin{subsection}{Problem Setup}
+Let $P$ denote the data distribution over units' observed covariates and health outcomes in the population of online survey respondents. Let $\mathcal{X}, \mathcal{Y}$ be the space of covariates and outcomes, respectively. We observe individual level survey data in the form of $i=1,2, \dots n$ samples $(X_{i}, Y_{i})$ independently drawn from $P$, where $X_{i} \in \mathcal{X}$ are covariates and $Y_{i} \in \mathcal{Y}$ is the health outcome. We assume that the observed covariates $X_{i}$ contains the micro- and macro-geographic region that unit $i$ belongs to. 
+
+Let $Q$ denote the data distribution over units' observed covariates and health outcomes in the target population. We assume that the target covariate distribution $Q_{X}$ is known; in our applications, $Q_{X}$ is given by the ACS Community Survey (US Census) \citep{bureau2021american}. Note that because the online survey suffers from sampling bias, $Q$ likely differs from $P$. Let $\mathcal{G}$ be the set of macro-geographic regions. For $g \in \mathcal{G}$, let $\mathcal{X}_{g}$ denote the subset of the covariate space that corresponds to individuals in macro-geographic region $g$. We observe macro-geographic level target outcomes, i.e. we see $\mu_{g} := \EE[Q]{Y \mid X \in \mathcal{X}_{g}} $ for all $g \in \mathcal{G}.$ 
+
+Let $\mathcal{H}$ be the set of micro-geographic regions. For $h \in \mathcal{H},$ let $\mathcal{X}_{h}$ denote the subset of the covariate space that corresponds to individuals in micro-geographic region $g$. The target quantities that we are interested in are $\mu_{h}:= \EE[Q]{Y \mid X \in \mathcal{X}_{h}}$ for all $h \in \mathcal{H}.$
+
+Note that with access to $\mu_{Q}(x):= \EE[Q]{Y \mid X=x}$, the conditional mean outcome in the target population, it is straightforward to estimate $\mu_{h}$ for $h \in \mathcal{H}.$ However, we only observe individual level data from $P$ and macro-geographic level outcome data from $Q$, so $\mu_{Q}(\cdot)$ is not identifiable.
+
+Central to our approach, we assume that the survey population $P$ is generated from the target population $Q$ via conditional $\Gamma$-biased sampling for $\Gamma \geq 1$ \citep{sahoo2022learning}. In $\Gamma$-biased sampling, observable covariates $X_{i}$ can affect a unit's probability of survey response arbitrarily, while the amount of unexplained variation in the probability of sample selection is bounded by a coonstant factor. \citet{sahoo2022learning} demonstrate that if $Q$ generates $P$ via conditional $\Gamma$-biased sampling, then
+\begin{equation} \Gamma^{-1} \leq \frac{dQ_{Y \mid X=x}(y)}{dP_{Y \mid X=x}(y)} \leq \Gamma \quad \forall x \in \mathcal{X}, y \in \mathcal{Y}.\end{equation}
+We note that when $\Gamma = 1$, this model reduces to the standard assumption of ignorable sampling bias. As $\Gamma$ increases, the amount of non-ignorable sampling bias permitted and the amount that the online survey conditional distribution can deviate from the target conditional distribution grows. Let $\mathcal{S}_\Gamma(P, Q_X)$ to be the set of all distributions $Q$ that satisfy the assumptions of $\Gamma$-biased sampling for an online survey distribution $P$ and a particular covariate distribution $Q_X$.
+
+\end{subsection}
+
+\begin{subsection}{Partial Identification Bounds}
+We note that $\mu_{h}$ for $h \in \mathcal{H}$ is not identifiable. Nevertheless, we can estimate partial identification bounds on these quantities. First, we propose to estimate partial identification bounds on the target conditional mean outcome $\mu_{Q}(\cdot)$ under the conditional $\Gamma$-biased sampling model. Then, we use our partial identification bounds on $\mu_{Q}(\cdot)$ to obtain bounds on $\mu_{h}$ for $h \in \mathcal{H}.$
+
+ If $Q$ generates $P$ under conditional $\Gamma$-biased sampling and has covariate distribution $Q_{X}$, then $Q$ lies in the set of distributions $\mathcal{S}_{\Gamma}(P, Q_{X}).$ So, the partial identification bounds on $\mu_{Q}(x)$ are given by 
+\begin{equation}
+\label{eq:def_bound}
+\mu_{\Gamma}^{-}(x):= \inf_{Q \in \mathcal{S}_{\Gamma}(P, Q_{X})} \EE[Q]{Y \mid X=x}, \quad  \mu_{\Gamma}^{+}(x):= \sup_{Q \in \mathcal{S}_{\Gamma}(P, Q_{X})}. \EE[Q]{Y \mid X=x}.
+\end{equation}
+So, if $Q$ generates $P$ via conditional $\Gamma$-biased sampling, then we must have that $\mu_{\Gamma}^{-}(x) \leq \mu_{Q}(x) \leq \mu_{\Gamma}^{+}(x)$ for all $x \in \mathcal{X}.$
+
+Let $q_{\alpha}(x)$ denote the conditional $\alpha$-quantile function, i.e. $q_{\alpha}(x) = P_{Y \mid X=x}^{-1}(\alpha).$ Then we can apply an argument analogous to Proposition 3 of \citet{dorn2024doubly} to obtain closed-form expressions for $\mu_{\Gamma}^{-}(\cdot), \mu_{\Gamma}^{+}(\cdot)$ as follows
+\begin{equation}
+\label{eq:bounds}
+\begin{split}
+\mu_{\Gamma}^{+}(x) &= \Gamma^{-1}\EE[P]{Y \mid X=x} + (\Gamma - \Gamma^{-1}) \EE[P]{Y \cdot \mathbb{I}(Y \geq q_{\eta(\Gamma)}(X)) \mid X=x}\\
+\mu_{\Gamma}^{-}(x) &= \Gamma \EE[P]{Y \mid X=x} + (\Gamma^{-1} - \Gamma) \cdot \EE[P]{Y \cdot \mathbb{I}(Y \geq q_{\zeta(\Gamma)}) \mid X=x},
+\end{split}
+\end{equation}
+ $\eta(\Gamma) = \frac{\Gamma}{\Gamma + 1}$ and $\zeta(\Gamma) = \frac{1}{\Gamma + 1}.$ Note that when $\Gamma = 1$, then both bounds reduce to the conditional mean of the online survey population $P$. We note that the bounds in \eqref{eq:bounds} depend on a conditional quantile function and moments of $P$, which are straightforward to estimate from the online survey data. A detailed estimation procedure is provided in Appendix \ref{app:alg}.
+
+When $Y$ is binary valued, i.e. $\mathcal{Y} = \{0, 1\}$, these partial identification bounds can be further simplified to
+\begin{equation} 
+\label{eq:binary_bounds}
+\begin{split}
+\mu_{\Gamma}^{+}(x) &= \min\{1 - \Gamma^{-1} + \EE[P]{Y \mid X=x} \cdot \Gamma^{-1},\, \EE[P]{Y \mid X=x}  \cdot \Gamma\} \\
+\mu_{\Gamma}^{-}(x) &= \max\{ 1 -  \Gamma + \EE[P]{Y \mid X=x} \cdot \Gamma,\, \EE[P]{Y \mid X=x}  \cdot \Gamma^{-1} \}.
+\end{split}
+\end{equation}
+We note that these partial identification bounds are a simple transformation of the conditional mean outcome in the online survey population.
+
+We emphasize that the bounds in \eqref{eq:bounds} and \eqref{eq:binary_bounds}, are not new to the literature; \citet{dorn2024doubly} derives a similar result in the context of obtaining partial identification bounds on causal effects in the presence of unmeasured confounding. Nevertheless, to the best of our knowledge, these partial identification bounds have not been applied to the problem of obtaining high-resolution estimates from online surveys with sampling bias.
+
+Given partial identification bounds on $\mu_{Q}(\cdot)$, we can compute partial identification bounds on $\mu_{h}$ for $h \in \mathcal{H}.$ Note that
+\begin{equation}
+\mu_{h} = \frac{\EE[Q_{X}]{\mu_{Q}(X) \cdot \mathbb{I}(X \in \mathcal{X}_{h}) }}{\PP[Q_{X}]{X \in \mathcal{X}_{h}}},
+\end{equation}
+which depends on the known target covariate distribution $Q_{X}$ and the unknown target conditional mean outcome $\mu_{Q}(\cdot)$. Given our partial identification bounds on $\mu_{Q}(\cdot)$, for any $h \in \mathcal{H}$, we can compute partial identification bounds on $\mu_{h}$ such that $\mu_{h, \Gamma}^{-} \leq \mu_{h} \leq \mu_{h, \Gamma}^{+}$, where
+\begin{equation}
+\begin{split}
+\mu_{h, \Gamma}^{-} = \frac{\EE[Q_{X}]{\mu_{\Gamma}^{-}(X) \cdot \mathbb{I}(X \in \mathcal{X}_{h}) }}{\PP[Q_{X}]{X \in \mathcal{X}_{h}}},\, \quad \mu_{h, \Gamma}^{+} &= \frac{\EE[Q_{X}]{\mu_{\Gamma}^{+}(X) \cdot \mathbb{I}(X \in \mathcal{X}_{h}) }}{\PP[Q_{X}]{X \in \mathcal{X}_{h}}}.
+\end{split}
+\end{equation}
+Note that we can define analogous quantities $\mu_{g, \Gamma}^{-}, \mu_{g, \Gamma}^{+}$ to obtain partial identification bounds on $g \in \mathcal{G}.$Thus, if we posit that the online survey population $P$ is related to the target population $Q$ through conditional $\Gamma$-biased sampling, we can obtain partial identification bounds on $\mu_{h}$ for $h \in \mathcal{H}$ that depend on $\Gamma$.
+\end{subsection}
+
+\begin{subsection}{Heuristic for Point Estimation}
+\label{subsec:heuristic}
+We can use the procedure from the previous subsection to compute partial identification bounds for $\mu_{g}$ such that $g \in \mathcal{G}$ for various choices of $\Gamma \geq 1.$ Note that if $Q$ generates $P$ via conditional $\Gamma$-biased sampling for a particular value of $\Gamma$, then the true target outcome $\mu_{g}$ will satisfy the consistency condition $\mu_{g, \Gamma}^{-} \leq \mu_{g} \leq \mu_{g, \Gamma}^{+}.$ Thus, without any further assumptions, one can calibrate $\Gamma$ by finding the minimum value of $\Gamma$ that ensures the consistency condition holds for all $g \in \mathcal{G}.$ Then this value of $\Gamma$ can be used to obtain partial identification bounds for $\mu_{h}$ for $h \in \mathcal{H}.$ However, one limitation of this approach is that the partial identification bounds obtained may be quite wide.
+
+Alternatively, if we are willing to further assume that the target population $Q$ is a worst-case distribution in $\mathcal{S}_{\Gamma}(P, Q_{X})$ for some $\Gamma \geq 1$, i.e. $Q$ is the distribution that yields the infimum or the supremum in \eqref{eq:def_bound} for some $\Gamma$, then we can propose a procedure for calibrating $\Gamma$ and obtaining point estimates for $\mu_{h}$. Note that if $Q$ yields the infimum in \eqref{eq:def_bound}, then we have that $\mu_{Q}= \mu_{\Gamma}^{-}$ and $\mu_{g} = \mu_{g, \Gamma}^{-}$ for all $g \in \mathcal{G}$ for some $\Gamma$. An analogous argument applies if $Q$ is the maximizing worst-case distribution in $\mathcal{S}_{\Gamma}(P, Q_{X})$--in this case, $\mu_{g} = \mu_{g, \Gamma}^{+}$ for all $g \in \mathcal{G}$ for some $\Gamma$. If the target population $Q$ is a worst-case distribution in $\mathcal{S}_{\Gamma}(P, Q_{X})$, then we can use either the upper or lower partial identification bound as a point estimate and select $\Gamma$ and the bound to use by minimizing the MSE between the target macro-geographic level outcomes and the partial identification bounds on the macro-geographic level outcomes:
+\begin{equation} (\tilde{\Gamma}, \tilde{z}) \in \text{argmin}_{\Gamma \geq 1, z \in \{+, -\}} \frac{1}{|\mathcal{G}|} \sum_{g \in \mathcal{G}} (\mu_{g, \Gamma}^{z} - \mu_{g})^{2}.\end{equation}
+
+We can use $(\tilde{\Gamma}, \tilde{z})$ obtained from solving this minimization problem to a compute micro-geographic level point estimate of $\mu_{h}$ as follows
+\begin{equation} \tilde{\mu}_{h} = \frac{\EE[Q_{X}]{\mu_{\tilde{\Gamma}}^{\tilde{z}}(X) \cdot \mathbb{I}(X \in \mathcal{X}_{h})}}{\PP[Q_{X}]{X \in \mathcal{X}_{h}}}.\end{equation}
+
+\rs{is there any way to strengthen this section?? more justification for using the bounds as point estimates?}
+
+\end{subsection}
+

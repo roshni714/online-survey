@@ -1,0 +1,133 @@
+\documentclass{article}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{natbib}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{fancyvrb}
+\usepackage{enumerate}
+\usepackage{relsize}
+\usepackage{multirow}
+\usepackage[section]{placeins}
+
+\usepackage{hyperref}
+\usepackage[margin=1.4in]{geometry}
+\hypersetup{colorlinks,citecolor=blue,urlcolor=blue,linkcolor=blue}
+
+% \newcommand\blfootnote[1]{%
+%   \begingroup
+%   \renewcommand\thefootnote{}\footnote{#1}%
+%   \addtocounter{footnote}{-1}%
+%   \endgroup
+% }
+
+\usepackage{stefan_tex}
+\graphicspath{{figs/}}
+
+%\numberwithin{equation}{section}
+
+%%%%%%%%% Theorems
+\theoremstyle{plain}
+\newtheorem{prop}{Proposition}
+
+\newtheorem{conj}[prop]{Conjecture}
+\newtheorem{coro}[prop]{Corollary}
+\newtheorem{lemm}[prop]{Lemma}
+\newtheorem{theo}[prop]{Theorem}
+
+\theoremstyle{definition}
+\newtheorem{exam}{Example}
+\newtheorem{defi}[exam]{Definition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{property}{Property}
+
+\theoremstyle{remark}
+\newtheorem{comm}[prop]{Comment}
+\newtheorem{rema}[prop]{Remark}
+
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+
+\newcommand{\amy}[1]{\color{red}{\emph{#1} - amy}\color{black}}
+
+\author{
+  Amy Guan$^{1}$ \and
+  Roshni Sahoo$^{1}$ \and 
+  Josh Salomon$^{2}$ \and
+  Stefan Wager$^{3}$ \and
+  Marissa Reitsma$^{2}$
+}
+
+\date{Stanford University}
+
+
+\title{High-Resolution Estimates of
+Population Health Indicators from Large-Scale Online
+Surveys with Sampling Bias}
+
+\begin{document}
+
+
+\maketitle
+
+\begin{abstract}
+High-resolution estimates of population health indicators are necessary for targeted and equitable public health interventions. 
+ L\blfootnote{\hspace{-5.3mm}{Draft version: \ifcase\month\or January\or February\or March\or April\or May\or June\or July\or August\or September\or October\or November\or December\fi \ \number \year }. $^{1}$ Department of Computer Science, $^{2}$ Department of Health Policy, $^{3}$ Graduate School of Business.}arge-scale online surveys are a promising tool for obtaining these estimates because they have low implementation costs and can scale to large sample sizes, but they often suffer from sampling bias, meaning the population of survey respondents may differ from the target population.
+\end{abstract}
+
+\begin{section}{Introduction}
+\input{01-intro}
+\end{section}
+
+\begin{section}{Methods}
+\label{sec:method}
+\input{02-setup}
+
+\end{section}
+
+\begin{section}{Experiments}
+\input{03-empirical}
+
+\end{section}
+
+\begin{section}{Discussion}
+\input{04-discussion}
+
+\end{section}
+
+
+\bibliographystyle{plainnat} 
+\bibliography{ref.bib}
+
+\appendix
+
+\begin{section}{Estimation Procedure}
+\label{app:alg}
+\input{05-estimation}
+\end{section}
+
+\begin{section}{Testbed}
+\label{app:dataset}
+\input{06-testbed}
+
+\end{section}
+
+\begin{section}{Training Details}
+\label{app:training}
+
+\input{07-training}
+
+\end{section}
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
