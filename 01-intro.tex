@@ -52,7 +52,7 @@ Our last contribution is an analysis of the cost-accuracy tradeoffs of online su
 \begin{subsection}{Related Work} 
 	Most prior works that aim to correct for sampling bias in survey data assume that sampling bias is ignorable, which means that an individual's probability of survey response only depends on observable characteristics but do not correct for non-ignorable selection. This type of sampling bias can be addressed via post-stratification \citep{groves2008impact, groves2011survey, little1993post}  or propensity score reweighting \citep{david1983imputation,rosenbaum1983central,seaman2013review}.
 
-	However, empirical studies of recent online surveys suggest that sampling bias in online surveys is non-ignorable \citep{bradley2021unrepresentative, kessler2022estimated}. Many previous works aim to address non-ignorable sampling bias in surveys \citep{andridge2011proxy, greenlees1982imputation, little2020measures, manski2016credible, qin2002estimation, peress2010correcting, reitsma2022bias, wisniowski2020integrating}. 
+	However, empirical studies of recent online surveys suggest that sampling bias in online surveys is non-ignorable \citep{bradley2021unrepresentative, kessler2022estimated}. Many previous works aim to address non-ignorable sampling bias in surveys \citep{andridge2011proxy, andridge2019indices, greenlees1982imputation, little2020measures, manski2016credible, qin2002estimation, peress2010correcting, reitsma2022bias, wisniowski2020integrating}. 
 
 \rs{roshni to spend time reviewing the literature}
 \begin{enumerate}
@@ -64,12 +64,12 @@ Our last contribution is an analysis of the cost-accuracy tradeoffs of online su
 
     \item \citet{wisniowski2020integrating} proposes a Bayesian modeling approach \rs{todo add detail}. Our work differs from these previous because we do not assume access to proxy variables, access to micro-geographic level target data, or a parametric form for the probability of survey response.
 
-    \item \citet{andridge2011proxy,little2020measures} - Gaussian modeling approach
+    \item \citet{andridge2011proxy,andridge2019indices,little2020measures} - Gaussian latent modeling approach
 
     \item \citet{manski2016credible} Manski bounds where nonselected individuals either have $Y=1$ or $Y=0$
 \end{enumerate}
 
-	Instead, the key assumption underlying our approach is the conditional $\Gamma$-biased sampling model of \citet{sahoo2022learning}, which is nonparametric model for non-ignorable sampling bias. The authors also consider learning under this model, but their goal is to learn a predictive model that minimizes the worst-case risk under $\Gamma$-biased sampling, not to obtain partial identification bounds on micro-geographic level target quantities. Furthermore, they also leave the question of how to select $\Gamma$ largely open, while our procedure provides concrete guidance on this choice by leveraging macro-geographic level target outcome data to select $\Gamma$. The form of the partial identification bounds under conditional $\Gamma$-biased sampling can be obtained by applying the results of \citet{dorn2024doubly,rockafellar2000optimization}.
+	Instead, the key assumption underlying our approach is the conditional $\Gamma$-biased sampling model, which is nonparametric model for non-ignorable sampling bias \citep{sahoo2022learning}. \citet{sahoo2022learning} also consider learning under this model, but their goal is to learn a predictive model that minimizes the worst-case risk under $\Gamma$-biased sampling, not to obtain partial identification bounds on micro-geographic level target quantities. Furthermore, they also leave the question of how to select $\Gamma$ largely open, while our procedure provides concrete guidance on this choice by leveraging macro-geographic level target outcome data to select $\Gamma$. The form of the partial identification bounds under conditional $\Gamma$-biased sampling can be obtained by applying the results of \citet{dorn2024doubly,rockafellar2000optimization}.
 \end{subsection}
 
 
